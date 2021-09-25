@@ -2,6 +2,7 @@ import dash
 from dash import dcc
 from dash import html
 from dash.dependencies import Input, Output
+from db_connection import get_words
 
 white_button_style = {'background-color': 'white',
                       'color': 'black',
@@ -63,7 +64,8 @@ def change_button_style(n_clicks):
 @app.callback(dash.dependencies.Output('page-1-content', 'children'),
               [dash.dependencies.Input('page-1-dropdown', 'value')])
 def page_1_dropdown(value):
-    return 'You have selected "{}"'.format(value)
+    words_list = get_words()
+    return words_list + '\n\n You have selected "{}"'.format(value)
 
 
 page_2_layout = html.Div([
@@ -96,7 +98,6 @@ def display_page(pathname):
         return page_2_layout
     else:
         return index_page
-    # You could also return a 404 "URL not found" page here
 
 
 if __name__ == '__main__':
