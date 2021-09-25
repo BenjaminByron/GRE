@@ -3,6 +3,7 @@ from dash import dcc
 from dash import html
 from dash.dependencies import Input, Output
 from db_connection import get_words
+import os
 
 white_button_style = {'background-color': 'white',
                       'color': 'black',
@@ -18,7 +19,8 @@ red_button_style = {'background-color': 'red',
                     'margin-top': '50px',
                     'margin-left': '50px'}
 
-app = dash.Dash(__name__, suppress_callback_exceptions=True)
+assets_path = os.getcwd() + '/assets'
+app = dash.Dash(__name__, suppress_callback_exceptions=True, assets_folder = assets_path)
 
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
