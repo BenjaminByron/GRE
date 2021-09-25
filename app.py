@@ -25,13 +25,13 @@ app.layout = html.Div([
     html.Div(id='page-content')
 ])
 
-
-index_page = html.Div([
+index_page = html.Div(
+className = 'app-header',
+    children = [
     html.H1('Hello, welcome to the GRE APP'),
     dcc.Link('Go to Page 1', href='/page-1'),
     html.Br(),
-    dcc.Link('Go to Page 2', href='/page-2'),
-])
+    dcc.Link('Go to Page 2', href='/page-2')])
 
 page_1_layout = html.Div(children = [
 
