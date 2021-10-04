@@ -2,7 +2,7 @@ import dash
 from dash import dcc
 from dash import html
 from dash.dependencies import Input, Output
-from db_connection import get_words
+from db_connection import get_words, get_topics
 import os
 
 white_button_style = {'background-color': 'white',
@@ -29,8 +29,8 @@ app.layout = html.Div([
 ])
 
 index_page = html.Div(
-className = 'app-header',
     children = [
+    html.Div('testing main.css', className = 'app-header'),
     html.H1('Hello, welcome to the GRE APP'),
     dcc.Link('Go to Page 1', href='/page-1'),
     html.Br(),
@@ -70,8 +70,8 @@ def page_1_dropdown(value):
     words_list = get_words()
     return words_list + '\n\n You have selected "{}"'.format(value)
 
-
 page_2_layout = html.Div([
+    html.Div(html.H1([i for i in get_topics()])),
     html.H1('Page 2'),
     dcc.RadioItems(
         id='page-2-radios',
