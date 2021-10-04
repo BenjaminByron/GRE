@@ -21,6 +21,7 @@ red_button_style = {'background-color': 'red',
 
 assets_path = os.getcwd() + '/assets'
 app = dash.Dash(__name__, suppress_callback_exceptions=True, assets_folder = assets_path)
+server = app.server
 
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),

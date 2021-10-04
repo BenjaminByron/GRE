@@ -7,5 +7,5 @@ Base=declarative_base()
 
 class Word(Base):
     __tablename__ = 'word'
-    word = Column('word', String(32), primary_key=True)
-    topic = Column('topic', String(32))
+    word = Column('Word', String(32), primary_key=True)
+    topic = Column('Topic', String(32))
