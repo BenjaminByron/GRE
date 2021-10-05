@@ -1,9 +1,13 @@
+import os
 import dash
 from dash import dcc
 from dash import html
 from dash.dependencies import Input, Output
-from db_connection import get_words, get_topics
-import os
+from db_connection import get_topics, get_words_by_topic
+
+assets_path = os.getcwd() + '/assets'
+app = dash.Dash(__name__, suppress_callback_exceptions=True, assets_folder = assets_path)
+server = app.server
 
 white_button_style = {'background-color': 'white',
                       'color': 'black',
@@ -19,9 +23,19 @@ red_button_style = {'background-color': 'red',
                     'margin-top': '50px',
                     'margin-left': '50px'}
 
-assets_path = os.getcwd() + '/assets'
-app = dash.Dash(__name__, suppress_callback_exceptions=True, assets_folder = assets_path)
-server = app.server
+def generate_button(word):
+    button = html.Button(id='button',
+                children=[str(word)],
+                n_clicks=0,
+                style=white_button_style),
+    return button[0]
+
+def generate_basket(topic):
+    basket = html.Div(
+        children = [html.H1(topic),
+                    html.Div(children =
+                             [generate_button(i) for i in get_words_by_topic(topic)]),])
+    return basket
 
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
@@ -67,12 +81,11 @@ def change_button_style(n_clicks):
 @app.callback(dash.dependencies.Output('page-1-content', 'children'),
               [dash.dependencies.Input('page-1-dropdown', 'value')])
 def page_1_dropdown(value):
-    words_list = get_words()
-    return words_list + '\n\n You have selected "{}"'.format(value)
+    return 'You have selected "{}"'.format(value)
 
 page_2_layout = html.Div([
-    html.Div(html.H1([i for i in get_topics()])),
     html.H1('Page 2'),
+    html.Div(children = [generate_basket(i) for i in get_topics()]),
     dcc.RadioItems(
         id='page-2-radios',
         options=[{'label': i, 'value': i} for i in ['Orange', 'Blue', 'Red']],
