@@ -2,7 +2,7 @@ import os
 import dash
 from dash import dcc
 from dash import html
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, MATCH
 from db_connection import get_topics, get_words_by_topic
 
 assets_path = os.getcwd() + '/assets'
@@ -23,18 +23,26 @@ red_button_style = {'background-color': 'red',
                     'margin-top': '50px',
                     'margin-left': '50px'}
 
-def generate_button(word):
-    button = html.Button(id='button',
-                children=[str(word)],
-                n_clicks=0,
-                style=white_button_style),
-    return button[0]
+def generate_card(word):
+    card = html.Div(
+        children=[html.Div(id={'role': 'card', 'index': word},
+                           className = 'definition'),
+                  html.Div([html.Button(id={'role': 'b', 'index': word},
+                            children=[str(word)],
+                            n_clicks=0,
+                            style=white_button_style,
+                            className= 'button')],)
+                  ],
+        className = 'card',
+    )
+    return card
 
 def generate_basket(topic):
     basket = html.Div(
         children = [html.H1(topic),
                     html.Div(children =
-                             [generate_button(i) for i in get_words_by_topic(topic)]),])
+                             [generate_card(i) for i in get_words_by_topic(topic)], ),],
+        className = 'basket')
     return basket
 
 app.layout = html.Div([
@@ -51,19 +59,7 @@ index_page = html.Div(
     dcc.Link('Go to Page 2', href='/page-2')])
 
 page_1_layout = html.Div(children = [
-
     html.H1('Page 1'),
-
-    html.Button(id='button',
-                children=['click'],
-                n_clicks=0,
-                style=white_button_style
-                ),
-    dcc.Dropdown(
-        id='page-1-dropdown',
-        options=[{'label': i, 'value': i} for i in ['LA', 'NYC', 'MTL']],
-        value='LA'
-    ),
     html.Div(id='page-1-content'),
     html.Br(),
     dcc.Link('Go to Page 2', href='/page-2'),
@@ -71,31 +67,15 @@ page_1_layout = html.Div(children = [
     dcc.Link('Go back to home', href='/'),
 ])
 
-@app.callback(Output('button', 'style'), [Input('button', 'n_clicks')])
-def change_button_style(n_clicks):
-    if n_clicks%2==  0:
-        return red_button_style
-    else:
-        return white_button_style
-
-@app.callback(dash.dependencies.Output('page-1-content', 'children'),
-              [dash.dependencies.Input('page-1-dropdown', 'value')])
-def page_1_dropdown(value):
-    return 'You have selected "{}"'.format(value)
 
 page_2_layout = html.Div([
     html.H1('Page 2'),
     html.Div(children = [generate_basket(i) for i in get_topics()]),
-    dcc.RadioItems(
-        id='page-2-radios',
-        options=[{'label': i, 'value': i} for i in ['Orange', 'Blue', 'Red']],
-        value='Orange'
-    ),
     html.Div(id='page-2-content'),
     html.Br(),
     dcc.Link('Go to Page 1', href='/page-1'),
     html.Br(),
-    dcc.Link('Go back to home', href='/')
+    dcc.Link('Go back to home', href='/'),
 ])
 
 @app.callback(dash.dependencies.Output('page-2-content', 'children'),
@@ -114,6 +94,19 @@ def display_page(pathname):
         return page_2_layout
     else:
         return index_page
+
+@app.callback(
+     Output({'role': 'card', 'index': MATCH}, 'children'),
+     [Input({'role': 'b', 'index': MATCH}, 'n_clicks'),
+      Input({'role': 'b', 'index': MATCH}, 'children')]
+)
+def response(n_clicks, children):
+    if n_clicks == 0:
+        return ''
+    elif n_clicks%2==  0:
+            return children
+    else:
+        return ''
 
 
 if __name__ == '__main__':
