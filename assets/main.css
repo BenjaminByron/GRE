@@ -1,3 +1,10 @@
 .app-header {
     color:red;
 }
+.card {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  flex-flow: space around;
+  align-items:baseline
+}

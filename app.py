@@ -25,13 +25,13 @@ red_button_style = {'background-color': 'red',
 
 def generate_card(word):
     card = html.Div(
-        children=[html.Div(id={'role': 'card', 'index': word},
-                           className = 'definition'),
-                  html.Div([html.Button(id={'role': 'b', 'index': word},
+        children=[html.Div([html.Button(id={'role': 'button', 'index': word},
                             children=[str(word)],
                             n_clicks=0,
                             style=white_button_style,
-                            className= 'button')],)
+                            className= 'button')],),
+                  html.Div(id={'role': 'card', 'index': word},
+                           className='definition'),
                   ],
         className = 'card',
     )
@@ -41,8 +41,8 @@ def generate_basket(topic):
     basket = html.Div(
         children = [html.H1(topic),
                     html.Div(children =
-                             [generate_card(i) for i in get_words_by_topic(topic)], ),],
-        className = 'basket')
+                             [generate_card(i) for i in get_words_by_topic(topic)], className = 'basket'),],
+        )
     return basket
 
 app.layout = html.Div([
@@ -97,13 +97,13 @@ def display_page(pathname):
 
 @app.callback(
      Output({'role': 'card', 'index': MATCH}, 'children'),
-     [Input({'role': 'b', 'index': MATCH}, 'n_clicks'),
-      Input({'role': 'b', 'index': MATCH}, 'children')]
+     [Input({'role': 'button', 'index': MATCH}, 'n_clicks'),
+      Input({'role': 'button', 'index': MATCH}, 'children')]
 )
 def response(n_clicks, children):
     if n_clicks == 0:
         return ''
-    elif n_clicks%2==  0:
+    elif n_clicks%2!=  0:
             return children
     else:
         return ''
