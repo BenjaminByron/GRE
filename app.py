@@ -7,6 +7,38 @@ from db_connection import get_topics, get_words_by_topic
 
 assets_path = os.getcwd() + '/assets'
 app = dash.Dash(__name__, suppress_callback_exceptions=True, assets_folder = assets_path)
+
+app.index_string = '''
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-209615147-1"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'UA-209615147-1');
+        </script>
+        {%metas%}
+        <title>{%title%}</title>
+        {%favicon%}
+        {%css%}
+    </head>
+    <body>
+        <div>My Custom header</div>
+        {%app_entry%}
+        <footer>
+            {%config%}
+            {%scripts%}
+            {%renderer%}
+        </footer>
+        <div>My Custom footer</div>
+    </body>
+</html>
+'''
+
 server = app.server
 
 white_button_style = {'background-color': 'white',
