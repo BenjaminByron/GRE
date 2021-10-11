@@ -77,6 +77,10 @@ def generate_basket(topic):
         )
     return basket
 
+def create_all_baskets():
+    a = [generate_basket(i) for i in get_topics()]
+    return a
+
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
     html.Div(id='page-content')
@@ -86,15 +90,11 @@ index_page = html.Div(
     children = [
     html.Div('testing main.css', className = 'app-header'),
     html.H1('Hello, welcome to the GRE APP'),
-    dcc.Link('Go to Page 1', href='/page-1'),
     html.Br(),
-    dcc.Link('Go to Page 2', href='/page-2')])
+    dcc.Link('Go to the full word list', href='/word-list')])
 
 page_1_layout = html.Div(children = [
-    html.H1('Page 1'),
-    html.Div(id='page-1-content'),
-    html.Br(),
-    dcc.Link('Go to Page 2', href='/page-2'),
+    dcc.Link('Go to the full word list', href='/word-list'),
     html.Br(),
     dcc.Link('Go back to home', href='/'),
 ])
@@ -102,27 +102,24 @@ page_1_layout = html.Div(children = [
 
 page_2_layout = html.Div([
     html.H1('Page 2'),
-    html.Div(children = [generate_basket(i) for i in get_topics()]),
-    html.Div(id='page-2-content'),
-    html.Br(),
-    dcc.Link('Go to Page 1', href='/page-1'),
+    html.Div(id ="basket", children = create_all_baskets()),
+    dcc.Loading(
+                id="loading-word-list",
+                type="default",
+                children=html.Div(id="basket")
+            ),
+    html.Div(id='word-list-content'),
     html.Br(),
     dcc.Link('Go back to home', href='/'),
 ])
 
-@app.callback(dash.dependencies.Output('page-2-content', 'children'),
-              [dash.dependencies.Input('page-2-radios', 'value')])
-def page_2_radios(value):
-    return 'You have selected "{}"'.format(value)
 
 
 # Update the index
 @app.callback(dash.dependencies.Output('page-content', 'children'),
               [dash.dependencies.Input('url', 'pathname')])
 def display_page(pathname):
-    if pathname == '/page-1':
-        return page_1_layout
-    elif pathname == '/page-2':
+    if pathname == '/word-list':
         return page_2_layout
     else:
         return index_page
