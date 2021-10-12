@@ -11,15 +11,6 @@ engine = create_engine('postgresql://iyoalfhnzaqaqy:54e38dd1ecf2b4a25c9158b51c3e
 Session=sessionmaker(bind=engine)
 session=Session()
 
-def get_words():
-    ''' Get all the words in the database regardless of topic. '''
-    s = ''
-    words = session.query(Word).all()
-    for w in words:
-        # print(w.__dict__)
-        s = s + w.word + ', '
-    get_baskets()
-    return s
 
 def get_topics():
     ''' Get the list of topics in the database by extracting the unique values from the topics column. '''
